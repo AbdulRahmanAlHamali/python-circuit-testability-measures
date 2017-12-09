@@ -8,7 +8,7 @@ testability = {}
 def calculateTestabilityMeasures(fileName):
     circuitDescription = parseCircuitDescriptionFromFile(fileName)
     print ("circuit description input output gates:")
-    print(circuitDescription)
+    #print(circuitDescription)
     levels = createLevelArrayFromCircuitDescription(circuitDescription)
     print "levels"
     print levels
@@ -30,14 +30,18 @@ def calculateTestabilityMeasures(fileName):
             observ=calculate_observability(line_info,line_ind,circuitDescription)
             testability[line_ind]["obs"]=observ
 
+
+
+    for n in testability:
+        testability[n]["testability s0"]=testability[n]["control1"]+testability[n]["obs"]
+        testability[n]["testability s1"]=testability[n]["control0"] +testability[n]["obs"]
+        # TODO something about 10% project requirment: List	10%	of	most	difficult	to	test	faults
+        # TOD calculate testability for xor gate
     print testability
-
-
 def calculate_cont_zero(line_info,circuitDescription):
 
     gate=line_info["leaving"]
     if gate==None:
-
         control0=1
         return control0
     else:
@@ -69,7 +73,6 @@ def calculate_cont_one(line_info,circuitDescription):
 
     gate=line_info["leaving"]
     if gate==None:
-
         control1=1
         return control1
     else:
