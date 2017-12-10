@@ -1,23 +1,14 @@
 import argparse
 from create_level_array_from_circuit_description import createLevelArrayFromCircuitDescription
 from parse_circuit_description_from_file import parseCircuitDescriptionFromFile
-
+from calculate_controllability import calculateControllability
 
 def calculateTestabilityMeasures(fileName):
     circuitDescription = parseCircuitDescriptionFromFile(fileName)
     levels = createLevelArrayFromCircuitDescription(circuitDescription)
     testability = {}
 
-    for level in levels:
-
-        for line_ind in level:
-            if testability.get(line_ind) is None:
-                testability[line_ind] = {}
-            line_info = level[line_ind]
-            control0 = calculate_cont_zero(line_info, circuitDescription, testability)
-            testability[line_ind]["control0"] = control0
-            control1 = calculate_cont_one(line_info, circuitDescription, testability)
-            testability[line_ind]["control1"] = control1
+    calculateControllability(levels, circuitDescription, testability);
     for level in reversed(levels):
         for line_ind in level:
             line_info = level[line_ind]
@@ -32,67 +23,6 @@ def calculateTestabilityMeasures(fileName):
         # TODO something about 10% project requirment: List	10%	of	most	difficult	to	test	faults
         # TOD calculate testability for xor gate
     print testability
-
-def calculate_cont_zero(line_info, circuitDescription, testability):
-
-    gate = line_info["leaving"]
-    if gate == None:
-        control0 = 1
-        return control0
-    else:
-        control0 = 0
-        gate_type = circuitDescription[2][gate]["type"]
-        if gate_type == "nand" or gate_type == "or":
-            for line in  circuitDescription[2][gate]["inputs"]:
-                control0 = testability[line]["control0"] + control0
-            control0 = control0 + 1
-            return control0
-        elif gate_type == "fanout":
-            line = circuitDescription[2][gate]["inputs"][0]
-            control0 = testability[line]["control0"]
-            return control0
-        elif gate_type == "and" or gate_type == "nor":
-            line = circuitDescription[2][gate]["inputs"][0]
-            control0 = testability[line]["control0"]
-            for line in  circuitDescription[2][gate]["inputs"]:
-                control0 = min(control0, testability[line]["control0"])
-            control0 = control0 + 1
-            return control0
-        elif gate_type == "not":
-            line = circuitDescription[2][gate]["inputs"][0]
-            control0 = testability[line]["control0"] + 1
-            return control0
-
-def calculate_cont_one(line_info, circuitDescription, testability):
-
-    gate = line_info["leaving"]
-    if gate == None:
-        control1 = 1
-        return control1
-    else:
-        control1 = 0
-        gate_type = circuitDescription[2][gate]["type"]
-
-        if gate_type == "and" or gate_type == "nor":
-            for line in circuitDescription[2][gate]["inputs"]:
-                control1 = testability[line]["control1"] + control1
-            control1 = control1 + 1
-            return control1
-        elif gate_type == "fanout":
-            line = circuitDescription[2][gate]["inputs"][0]
-            control1 = testability[line]["control1"]
-            return control1
-        elif gate_type == "nand" or gate_type == "or":
-            line = circuitDescription[2][gate]["inputs"][0]
-            control1 = testability[line]["control1"]
-            for line in circuitDescription[2][gate]["inputs"]:
-                control1 = min(control1, testability[line]["control1"])
-            control1 = control1 + 1
-            return control1
-        elif gate_type == "not":
-            line = circuitDescription[2][gate]["inputs"][0]
-            control1 = testability[line]["control1"] + 1
-            return control1
 
 def calculate_observability(line_info, line_ind, circuitDescription, testability):
     gate = line_info["entering"]
