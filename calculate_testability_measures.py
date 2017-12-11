@@ -16,7 +16,7 @@ def calculateTestabilityMeasures(fileName):
         testability[n]["testability s0"] = testability[n]["control1"] + testability[n]["obs"]
         testability[n]["testability s1"] = testability[n]["control0"] + testability[n]["obs"]
         # TODO something about 10% project requirment: List	10%	of	most	difficult	to	test	faults
-        # TOD calculate testability for xor gate
+        # TODo calculate testability for xor gate
     print testability
 
 if __name__ == '__main__':
