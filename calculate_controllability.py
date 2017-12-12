@@ -38,11 +38,24 @@ def calculateControllabilityToZero(lineInfo, circuitDescription, testability):
             line = circuitDescription[2][gate]["inputs"][0]
             control0 = testability[line]["control0"] + 1
             return control0
-        elif gateType == "buffer":
+        elif gateType == "buf":
             line = circuitDescription[2][gate]["inputs"][0]
             control0 = testability[line]["control0"]
             return control0
 
+        #TODO review xor
+        elif gateType == "xor":
+            control0a=0
+            control1a = 0
+            for line in circuitDescription[2][gate]["inputs"]:
+                control0a = testability[line]["control0"] + control0a
+
+            for line in circuitDescription[2][gate]["inputs"]:
+                control1a = testability[line]["control1"] + control1a
+            control0=min(control0a,control1a)+1
+            return control0
+        else:
+            print "error no gateType:" + gateType
 
 def calculateControllabilityToOne(lineInfo, circuitDescription, testability):
     gate = lineInfo["leaving"]
@@ -73,7 +86,19 @@ def calculateControllabilityToOne(lineInfo, circuitDescription, testability):
             line = circuitDescription[2][gate]["inputs"][0]
             control1 = testability[line]["control1"] + 1
             return control1
-        elif gateType == "buffer":
+        elif gateType == "buf":
             line = circuitDescription[2][gate]["inputs"][0]
             control1 = testability[line]["control1"]
             return control1
+        elif gateType =='xor':
+            line = circuitDescription[2][gate]["inputs"][0]
+            c01=testability[line]["control1"]
+            c00=testability[line]["control0"]
+            line2 = circuitDescription[2][gate]["inputs"][1]
+            c10 = testability[line2]["control0"]
+            c11 = testability[line2]["control1"]
+            control1=min((c10+c01),(c00+c11))+1
+            return control1
+
+        else:
+            print "error no gateType:" + gateType
