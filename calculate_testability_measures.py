@@ -10,6 +10,8 @@ def calculateTestabilityMeasures(fileName):
     levels = createLevelArrayFromCircuitDescription(circuitDescription)
     testability = {}
 
+    #print circuitDescription
+    #print levels
     calculateControllability(levels, circuitDescription, testability);
     calculateObservability(levels, circuitDescription, testability);
 
@@ -23,7 +25,7 @@ def calculateTestabilityMeasures(fileName):
     sortedTest1 = sorted(testability, key=lambda x: (testability[x]['testability s1'],), reverse=True)
 
     lengthTestability=len(testability)
-
+    print testability
     x= round (lengthTestability*0.1,0)
     print "highest 10% testabilitys0 "
     for i in range(1,int(x)+1):
