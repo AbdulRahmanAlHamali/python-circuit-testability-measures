@@ -23,13 +23,22 @@ def calculateLineObservability(lineInfo, lineInd, circuitDescription, testabilit
 
             obs = obs + 1
             return obs
-        elif gateType == "or" or gateType == "nor" or gateType == "xor":
+        elif gateType == "or" or gateType == "nor":
             obs = testability[outputLine[0]]["obs"]
             for line in circuitDescription[2][gate]["inputs"]:
                 if lineInd == line:
                     pass
                 else:
                     obs = obs + testability[line]["control0"]
+            obs = obs + 1
+            return obs
+        elif gateType == "xor":
+            obs = testability[outputLine[0]]["obs"]
+            for line in circuitDescription[2][gate]["inputs"]:
+                if lineInd == line:
+                    pass
+                else:
+                    obs += min(testability[line]["control0"], testability[line]["control1"])
             obs = obs + 1
             return obs
         elif gateType == "not":
